@@ -1,6 +1,7 @@
 package com.likelion.dao;
 
 import com.likelion.domain.User;
+import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
 import java.sql.*;
@@ -11,44 +12,22 @@ public class UserDao {
 
     private JdbcContext jdbcContext;
 
+    private JdbcTemplate jdbcTemplate;
+
     public UserDao(DataSource dataSource) {
         this.dataSource = dataSource;
         this.jdbcContext = new JdbcContext(dataSource);
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
-//    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
-//        Connection c = null;
-//        PreparedStatement ps = null;
-//
-//        try {
-//            c = dataSource.getConnection();
-//            ps = stmt.makePreparedStatement(c);
-//            ps.executeUpdate();
-//        } catch (SQLException e) {
-//            throw new RuntimeException(e);
-//        } finally {
-//            if(ps!=null) {
-//                try {
-//                    ps.close();
-//                } catch (SQLException e) {
-//                }
-//            }
-//            if(c!=null) {
-//                try {
-//                    c.close();
-//                } catch (SQLException e) {
-//                }
-//            }
-//        }
-//    }
-
     public void deleteAll() throws ClassNotFoundException, SQLException {
-        jdbcContext.workWithStatementStrategy(new StatementStrategy() {
-            @Override
-            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
-                return c.prepareStatement("delete from users");
-            }
-        });
+//        jdbcContext.workWithStatementStrategy(new StatementStrategy() {
+//            @Override
+//            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+//                return c.prepareStatement("delete from users");
+//            }
+//        });
+        jdbcContext.excuteSql("delete from users");
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
