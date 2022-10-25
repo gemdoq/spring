@@ -2,39 +2,35 @@ package com.likelion.dao;
 
 import com.likelion.domain.User;
 
+import javax.sql.DataSource;
 import java.sql.*;
 
-import static java.lang.Class.forName;
-
 public class UserDao {
-    private ConnectionMaker connectionMaker;
 
-    public UserDao() {
-        this.connectionMaker = new AWSConnectionMaker();
+    private DataSource dataSource;
+
+    public UserDao(DataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
-    public UserDao(ConnectionMaker connectionMaker) {
-        this.connectionMaker = connectionMaker;
-    }
-
-    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException, ClassNotFoundException {
+    public void deleteAll() throws ClassNotFoundException, SQLException {
         Connection c = null;
         PreparedStatement ps = null;
 
         try {
-            c = connectionMaker.makeConnection();
-            ps = stmt.makePreparedStatement(c);
+            c = dataSource.getConnection();
+            ps = c.prepareStatement("delete from users");
             ps.executeUpdate();
         } catch (SQLException e) {
-            throw e;
+            throw new RuntimeException(e);
         } finally {
             if(ps!=null) try {
                 ps.close();
-            } catch (SQLException ignore) {
+            } catch (SQLException e) {
             }
             if(c!=null) try {
                 c.close();
-            } catch (SQLException ignore) {
+            } catch (SQLException e) {
             }
         }
     }
@@ -44,7 +40,7 @@ public class UserDao {
         PreparedStatement ps = null;
 
         try {
-            c = connectionMaker.makeConnection();
+            c = dataSource.getConnection();
             ps = new AddStatement(user).makePreparedStatement(c);
             ps.setString(1, user.getId());
             ps.setString(2, user.getName());
@@ -73,7 +69,7 @@ public class UserDao {
         User user = null;
 
         try {
-            c = connectionMaker.makeConnection();
+            c = dataSource.getConnection();
             ps = c.prepareStatement("select * from users where id = ?");
             ps.setString(1, id);
             System.out.println(ps);//쿼리문을 출력
@@ -104,20 +100,14 @@ public class UserDao {
         return user;
     }
 
-    public void deleteAll() throws ClassNotFoundException, SQLException {
-        StatementStrategy statementStrategy = new DeleteAllStatement();
-        jdbcContextWithStatementStrategy(statementStrategy);
-    }
-
     public int getCount() throws SQLException, ClassNotFoundException {
         Connection c = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-
         int count = 0;
 
         try {
-            c = connectionMaker.makeConnection();
+            c = dataSource.getConnection();
             ps = c.prepareStatement("select count(*) from users");
             rs = ps.executeQuery();
 
@@ -141,10 +131,5 @@ public class UserDao {
             }
         }
         return count;
-    }
-
-    public static void main(String[] args) throws SQLException, ClassNotFoundException {
-        UserDao userDao = new UserDao();
-        userDao.add(new User("4","최승호","password"));
     }
 }

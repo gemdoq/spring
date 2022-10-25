@@ -50,6 +50,7 @@ DeleteAllStrategy와 AddStrategy 추가 및 적용 및 테스트
 (225)deleteAll에서 context 분리 및 적용 후 인터페이스 statementstrategy 호출
 ## Datasource 사용
 Java에 내장된 인터페이스 DataSource를 각 접속처에 맞게 구현체를 만들어 AWSConnectionMaker를 대체하자(ConnectionMaker대신 DataSource, AWSConnectionMaker대신 AWSDataSource)
-
+팩토리 빈 추가
+생성자 매개변수 타입변경
 ## anonymous 적용
 ## template callback
