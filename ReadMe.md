@@ -33,5 +33,10 @@ Connection타입을 반환하는 makeConnection을 클래스로 분리한다.
 ## interface 적용
 Connection타입을 반환하는 makeConnection을 인터페이스로 만들고 구현한다.
 생성자 오버로딩을 통해 DI한다.
-
+# IoC와 전략패턴
+UserDao는 전략패턴에서 변하지 않는 중복되는 부분인 context에 해당한다.
+## factory, bean
+인터페이스를 구현체로 만들고 생성자를 통해 의존성을 주입하는 행위를 factory가 대신함. bean은 기능을 담당하는 각 모듈 유닛 하나하나.
+팩토리에 spring을 적용해준다. (annotation @configuration, @bean)
+테스트에 spring을 적용해준다. (annotation @extendwith, @contextconfiguration, @autowired)
 
