@@ -14,6 +14,10 @@ public class UserDao {
         this.connectionMaker = new AWSConnectionMaker();
     }
 
+    public UserDao(ConnectionMaker connectionMaker) {
+        this.connectionMaker = connectionMaker;
+    }
+
     public void add(User user) throws ClassNotFoundException, SQLException {
         Connection c = connectionMaker.makeConnection();
         PreparedStatement ps = c.prepareStatement("insert into users(id,name,password) values(?,?,?)");

@@ -32,5 +32,6 @@ Connection타입을 반환하는 makeConnection을 메서드로 분리한다.
 Connection타입을 반환하는 makeConnection을 클래스로 분리한다.
 ## interface 적용
 Connection타입을 반환하는 makeConnection을 인터페이스로 만들고 구현한다.
+생성자 오버로딩을 통해 DI한다.
 
 
