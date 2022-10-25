@@ -39,4 +39,12 @@ UserDao는 전략패턴에서 변하지 않는 중복되는 부분인 context에
 인터페이스를 구현체로 만들고 생성자를 통해 의존성을 주입하는 행위를 factory가 대신함. bean은 기능을 담당하는 각 모듈 유닛 하나하나.
 팩토리에 spring을 적용해준다. (annotation @configuration, @bean)
 테스트에 spring을 적용해준다. (annotation @extendwith, @contextconfiguration, @autowired)
+## 예외처리
+예외처리를 해주지 않으면 중간에 에러가 발생해서 객체의 생명이 소실되지 않아, 서버의 자원을 잡아먹게 된다.
+즉, 에러가 발생해도 사용이 끝난 객체의 생명을 제어할 수 있도록 예외처리를 해준다.
+## strategy
 
+## context 분리
+## Datasource 사용
+## anonymous 적용
+## template callback

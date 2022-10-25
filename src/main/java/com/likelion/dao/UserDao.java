@@ -19,33 +19,69 @@ public class UserDao {
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Connection c = connectionMaker.makeConnection();
-        PreparedStatement ps = c.prepareStatement("insert into users(id,name,password) values(?,?,?)");
-        ps.setString(1, user.getId());
-        ps.setString(2, user.getName());
-        ps.setString(3, user.getPassword());
+        Connection c = null;
+        PreparedStatement ps = null;
 
-        ps.executeUpdate();
+        try {
+            c = connectionMaker.makeConnection();
+            ps = c.prepareStatement("insert into users(id,name,password) values(?,?,?)");
+            ps.setString(1, user.getId());
+            ps.setString(2, user.getName());
+            ps.setString(3, user.getPassword());
 
-        ps.close();
-        c.close();
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            //사용한 객체를 닫을 때는 역순으로
+            if(ps!=null) try {
+                ps.close();
+            } catch (SQLException ignore) {
+            }
+            if(c!=null) try {
+                c.close();
+            } catch (SQLException ignore) {
+            }
+        }
     }
 
-    public void findById(String id) throws ClassNotFoundException, SQLException {
-        Connection c = connectionMaker.makeConnection();
-        PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
-        ps.setString(1, id);
-        System.out.println(ps);//쿼리문을 출력
-        ResultSet rs = ps.executeQuery();//ResultSet이 쿼리실행문을 담아오는 객체
-        rs.next();//ResultSet의 커서 초기값이 -1이므로 0에 위치
-        System.out.println(rs.getString(2));
-        System.out.println(rs.getString(3));
-        //닫을때는 역순으로
-        rs.close();
-        ps.close();
-        c.close();
-    }
+    public User findById(String id) throws ClassNotFoundException, SQLException {
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        User user = null;
 
+        try {
+            c = connectionMaker.makeConnection();
+            ps = c.prepareStatement("select * from users where id = ?");
+            ps.setString(1, id);
+            System.out.println(ps);//쿼리문을 출력
+            rs = ps.executeQuery();//ResultSet이 쿼리실행문을 담아오는 객체
+
+            if (rs.next()) {
+                System.out.println(rs.getString(2));
+                System.out.println(rs.getString(3));
+                user = new User(rs.getString(1), rs.getString(2), rs.getString(3));
+            }
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            //사용한 객체를 닫을 때는 역순으로
+            if(rs!=null) try {
+                rs.close();
+            } catch (SQLException ignore) {
+            }
+            if(ps!=null) try {
+                ps.close();
+            } catch (SQLException ignore) {
+            }
+            if(c!=null) try {
+                c.close();
+            } catch (SQLException ignore) {
+            }
+        }
+        return user;
+    }
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         UserDao userDao = new UserDao();
