@@ -3,7 +3,6 @@ package com.likelion.dao;
 import com.likelion.domain.User;
 
 import java.sql.*;
-import java.util.Map;
 
 import static java.lang.Class.forName;
 
@@ -18,13 +17,35 @@ public class UserDao {
         this.connectionMaker = connectionMaker;
     }
 
+    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException, ClassNotFoundException {
+        Connection c = null;
+        PreparedStatement ps = null;
+
+        try {
+            c = connectionMaker.makeConnection();
+            ps = stmt.makePreparedStatement(c);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if(ps!=null) try {
+                ps.close();
+            } catch (SQLException ignore) {
+            }
+            if(c!=null) try {
+                c.close();
+            } catch (SQLException ignore) {
+            }
+        }
+    }
+
     public void add(User user) throws ClassNotFoundException, SQLException {
         Connection c = null;
         PreparedStatement ps = null;
 
         try {
             c = connectionMaker.makeConnection();
-            ps = new AddStrategy(user).makePreparedStatement(c);
+            ps = new AddStatement(user).makePreparedStatement(c);
             ps.setString(1, user.getId());
             ps.setString(2, user.getName());
             ps.setString(3, user.getPassword());
@@ -84,25 +105,8 @@ public class UserDao {
     }
 
     public void deleteAll() throws ClassNotFoundException, SQLException {
-        Connection c = null;
-        PreparedStatement ps = null;
-
-        try {
-            c = connectionMaker.makeConnection();
-            ps = new DeleteAllStrategy().makePreparedStatement(c);
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            if(ps!=null) try {
-                ps.close();
-            } catch (SQLException ignore) {
-            }
-            if(c!=null) try {
-                c.close();
-            } catch (SQLException ignore) {
-            }
-        }
+        StatementStrategy statementStrategy = new DeleteAllStatement();
+        jdbcContextWithStatementStrategy(statementStrategy);
     }
 
     public int getCount() throws SQLException, ClassNotFoundException {

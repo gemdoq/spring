@@ -6,11 +6,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
-public class AddStrategy implements StatementStrategy{
+public class AddStatement implements StatementStrategy{
 
     private User user;
 
-    public AddStrategy(User user) {
+    public AddStatement(User user) {
         this.user = user;
     }
 

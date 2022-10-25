@@ -47,6 +47,9 @@ UserDao는 전략패턴에서 변하지 않는 중복되는 부분인 context에
 ps가 중복되기 때문에 인터페이스 psstrategy로 분리
 DeleteAllStrategy와 AddStrategy 추가 및 적용 및 테스트
 ## context 분리
+(225)deleteAll에서 context 분리 및 적용 후 인터페이스 statementstrategy 호출
 ## Datasource 사용
+Java에 내장된 인터페이스 DataSource를 각 접속처에 맞게 구현체를 만들어 AWSConnectionMaker를 대체하자(ConnectionMaker대신 DataSource, AWSConnectionMaker대신 AWSDataSource)
+
 ## anonymous 적용
 ## template callback
