@@ -47,10 +47,14 @@ UserDao는 전략패턴에서 변하지 않는 중복되는 부분인 context에
 ps가 중복되기 때문에 인터페이스 psstrategy로 분리
 DeleteAllStrategy와 AddStrategy 추가 및 적용 및 테스트
 ## context 분리
-(225)deleteAll에서 context 분리 및 적용 후 인터페이스 statementstrategy 호출
+(225)deleteAll에서 context 분리 및 적용
 ## Datasource 사용
 Java에 내장된 인터페이스 DataSource를 각 접속처에 맞게 구현체를 만들어 AWSConnectionMaker를 대체하자(ConnectionMaker대신 DataSource, AWSConnectionMaker대신 AWSDataSource)
 팩토리 빈 추가
 생성자 매개변수 타입변경
 ## anonymous 적용
+jdbcContextWithStatementStrategy의 매개변수로 굳이 구현체를 쓰지 않고 바로 인터페이스 StatementStrategy를 호출해서 익명클래스 적용
+## JdbcContext 분리
+내부 메서드가 아니라 클래스로 분리필요
+왜냐하면 다른 DAO 예를 들어 HospitalDao에서도 쓸 수 있기에 UserDao에서 분리
 ## template callback
