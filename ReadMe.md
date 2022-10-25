@@ -44,7 +44,8 @@ UserDao는 전략패턴에서 변하지 않는 중복되는 부분인 context에
 즉, 에러가 발생해도 사용이 끝난 객체의 생명을 제어할 수 있도록 예외처리를 해준다.
 ## deleteAll()과 getCount()추가
 ## strategy
-
+ps가 중복되기 때문에 인터페이스 psstrategy로 분리
+DeleteAllStrategy와 AddStrategy 추가 및 적용 및 테스트
 ## context 분리
 ## Datasource 사용
 ## anonymous 적용

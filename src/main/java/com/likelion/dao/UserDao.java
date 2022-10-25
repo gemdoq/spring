@@ -24,7 +24,7 @@ public class UserDao {
 
         try {
             c = connectionMaker.makeConnection();
-            ps = c.prepareStatement("insert into users(id,name,password) values(?,?,?)");
+            ps = new AddStrategy(user).makePreparedStatement(c);
             ps.setString(1, user.getId());
             ps.setString(2, user.getName());
             ps.setString(3, user.getPassword());
@@ -89,7 +89,7 @@ public class UserDao {
 
         try {
             c = connectionMaker.makeConnection();
-            ps = c.prepareStatement("Delete from users");
+            ps = new DeleteAllStrategy().makePreparedStatement(c);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw e;
