@@ -27,21 +27,26 @@ public class UserDao {
 //                return c.prepareStatement("delete from users");
 //            }
 //        });
-        jdbcContext.excuteSql("delete from users");
+
+//        jdbcContext.excuteSql("delete from users");
+
+        jdbcTemplate.update("delete from users");
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        jdbcContext.workWithStatementStrategy(new StatementStrategy() {
-            @Override
-            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
-                PreparedStatement ps = c.prepareStatement("insert into users(id,name,password) values(?,?,?);");
-                ps.setString(1, user.getId());
-                ps.setString(2, user.getName());
-                ps.setString(3, user.getPassword());
+//        jdbcContext.workWithStatementStrategy(new StatementStrategy() {
+//            @Override
+//            public PreparedStatement makePreparedStatement(Connection c) throws SQLException {
+//                PreparedStatement ps = c.prepareStatement("insert into users(id,name,password) values(?,?,?);");
+//                ps.setString(1, user.getId());
+//                ps.setString(2, user.getName());
+//                ps.setString(3, user.getPassword());
+//
+//                return ps;
+//            }
+//        });
 
-                return ps;
-            }
-        });
+        jdbcTemplate.update("insert into users(id,name,password) values(?,?,?);", user.getId(), user.getName(), user.getPassword());
     }
 
     public User findById(String id) throws ClassNotFoundException, SQLException {
