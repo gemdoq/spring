@@ -16,7 +16,7 @@ public class UserDao {
     PreparedStatement타입 변수에 접속한 객체 내의 prepareStatement()메서드로 쿼리문을 담기
     해당되는 PreparedStatement타입 객체의 키에 해당하는 문자열 값을 변경한다.
      */
-    public void add() throws ClassNotFoundException, SQLException {
+    public void add(User user) throws ClassNotFoundException, SQLException {
         Map<String, String> env = System.getenv();
         String dbHost = env.get("DB_HOST");
         String dbUser = env.get("DB_USER");
@@ -26,9 +26,9 @@ public class UserDao {
         Connection c = DriverManager.getConnection(dbHost, dbUser, dbPassword);
 
         PreparedStatement ps = c.prepareStatement("insert into users(id,name,password) values(?,?,?)");
-        ps.setString(1, "3");
-        ps.setString(2, "최승호");
-        ps.setString(3, "password");
+        ps.setString(1, user.getId());
+        ps.setString(2, user.getName());
+        ps.setString(3, user.getPassword());
 
         ps.executeUpdate();
 
@@ -65,6 +65,6 @@ public class UserDao {
 
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         UserDao userDao = new UserDao();
-        userDao.findById("1");
+        userDao.add(new User("4","최승호","password"));
     }
 }
