@@ -13,53 +13,38 @@ public class UserDao {
         this.dataSource = dataSource;
     }
 
-    public void deleteAll() throws ClassNotFoundException, SQLException {
+    public void jdbcContextWithStatementStrategy(StatementStrategy stmt) throws SQLException {
         Connection c = null;
         PreparedStatement ps = null;
 
         try {
             c = dataSource.getConnection();
-            ps = new DeleteAllStatement().makePreparedStatement(c);
+            ps = stmt.makePreparedStatement(c);
             ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            if(ps!=null) try {
-                ps.close();
-            } catch (SQLException e) {
+            if(ps!=null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                }
             }
-            if(c!=null) try {
-                c.close();
-            } catch (SQLException e) {
+            if(c!=null) {
+                try {
+                    c.close();
+                } catch (SQLException e) {
+                }
             }
         }
     }
 
+    public void deleteAll() throws ClassNotFoundException, SQLException {
+        jdbcContextWithStatementStrategy(new DeleteAllStatement());
+    }
+
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Connection c = null;
-        PreparedStatement ps = null;
-
-        try {
-            c = dataSource.getConnection();
-            ps = new AddStatement(user).makePreparedStatement(c);
-            ps.setString(1, user.getId());
-            ps.setString(2, user.getName());
-            ps.setString(3, user.getPassword());
-
-            ps.executeUpdate();
-        } catch (SQLException e) {
-            throw e;
-        } finally {
-            //사용한 객체를 닫을 때는 역순으로
-            if(ps!=null) try {
-                ps.close();
-            } catch (SQLException ignore) {
-            }
-            if(c!=null) try {
-                c.close();
-            } catch (SQLException ignore) {
-            }
-        }
+        jdbcContextWithStatementStrategy(new AddStatement(user));
     }
 
     public User findById(String id) throws ClassNotFoundException, SQLException {
