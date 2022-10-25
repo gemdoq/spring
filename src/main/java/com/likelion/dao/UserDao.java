@@ -83,6 +83,62 @@ public class UserDao {
         return user;
     }
 
+    public void deleteAll() throws ClassNotFoundException, SQLException {
+        Connection c = null;
+        PreparedStatement ps = null;
+
+        try {
+            c = connectionMaker.makeConnection();
+            ps = c.prepareStatement("Delete from users");
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if(ps!=null) try {
+                ps.close();
+            } catch (SQLException ignore) {
+            }
+            if(c!=null) try {
+                c.close();
+            } catch (SQLException ignore) {
+            }
+        }
+    }
+
+    public int getCount() throws SQLException, ClassNotFoundException {
+        Connection c = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        int count = 0;
+
+        try {
+            c = connectionMaker.makeConnection();
+            ps = c.prepareStatement("select count(*) from users");
+            rs = ps.executeQuery();
+
+            if(rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            throw e;
+        } finally {
+            if(rs!=null) try {
+                rs.close();
+            } catch (SQLException ignore) {
+            }
+            if(ps!=null) try {
+                ps.close();
+            } catch (SQLException ignore) {
+            }
+            if(c!=null) try {
+                c.close();
+            } catch (SQLException ignore) {
+            }
+        }
+        return count;
+    }
+
     public static void main(String[] args) throws SQLException, ClassNotFoundException {
         UserDao userDao = new UserDao();
         userDao.add(new User("4","최승호","password"));
