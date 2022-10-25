@@ -8,21 +8,14 @@ import java.util.Map;
 import static java.lang.Class.forName;
 
 public class UserDao {
+    private ConnectionMaker connectionMaker;
 
-    private Connection makeConnection() throws ClassNotFoundException, SQLException {
-        Map<String, String> env = System.getenv();
-        String dbHost = env.get("DB_HOST");
-        String dbUser = env.get("DB_USER");
-        String dbPassword = env.get("DB_PASSWORD");
-
-        Class.forName("com.mysql.cj.jdbc.Driver");
-        Connection c = DriverManager.getConnection(dbHost, dbUser, dbPassword);
-
-        return c;
+    public UserDao() {
+        this.connectionMaker = new AWSConnectionMaker();
     }
 
     public void add(User user) throws ClassNotFoundException, SQLException {
-        Connection c = makeConnection();
+        Connection c = connectionMaker.makeConnection();
         PreparedStatement ps = c.prepareStatement("insert into users(id,name,password) values(?,?,?)");
         ps.setString(1, user.getId());
         ps.setString(2, user.getName());
@@ -35,7 +28,7 @@ public class UserDao {
     }
 
     public void findById(String id) throws ClassNotFoundException, SQLException {
-        Connection c = makeConnection();
+        Connection c = connectionMaker.makeConnection();
         PreparedStatement ps = c.prepareStatement("select * from users where id = ?");
         ps.setString(1, id);
         System.out.println(ps);//쿼리문을 출력
